@@ -72,6 +72,31 @@ app.post("/urls/:id/delete", (req, res) => {
   }
 });
 
+app.post("/urls/:id/update", (req, res) => {
+  const updateItem = req.params.id;
+  let editURL = req.body.longURL;
+  if(!editURL.startsWith("http://") && !editURL.startsWith("https://")) {
+    editURL = `http://${editURL}`;
+  }
+  if(!editURL.endsWith(".com")) {
+    editURL = `${editURL}.com`;
+  }
+  if(urlDatabase[updateItem]) {
+    urlDatabase[updateItem] = editURL;
+    res.redirect(`/urls`);
+  }
+});
+
+app.post("/urls/:id/edit", (req, res) => {
+  const editItem = req.params.id;
+  if(urlDatabase[editItem]) {
+    res.redirect(`/urls/${editItem}`)
+  }
+  else{
+    res.send("URL was not found")
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
