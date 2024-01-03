@@ -42,17 +42,23 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
-app.get("/urls/:id", (req, res) => {
+app.get("/u/:id", (req, res) => {
   const id = req.params.id;
   const templateVars = {id: req.params.id, longURL: urlDatabase[id]};
   res.render("urls_show", templateVars);
 });
 
 app.post("/urls", (req, res) => {
-  const longURL = req.body.longURL;
+  let longURL = req.body.longURL;
+  if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
+    longURL = `http://${longURL}`;
+  }
+  if(!longURL.endsWith(".com")) {
+    longURL = `${longURL}.com`;
+  }
   const shortURLID = generateRandomString(6);
   urlDatabase[shortURLID] = longURL;
-  res.json({ shortURLID });
+  res.redirect(`/u/${shortURLID}`);
 });
 
 
