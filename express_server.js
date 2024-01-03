@@ -11,6 +11,16 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const generateRandomString = (length) => {
+  const alphanumericChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let randomString = '';
+  for (let i = 0; i < length; i++) {
+    const index = Math.floor(Math.random() * alphanumericChars.length);
+    randomString += alphanumericChars.charAt(index);
+  }
+  return randomString;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -39,8 +49,10 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  const longURL = req.body.longURL;
+  const shortURLID = generateRandomString(6);
+  urlDatabase[shortURLID] = longURL;
+  res.json({ shortURLID });
 });
 
 
