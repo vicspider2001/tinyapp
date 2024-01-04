@@ -97,6 +97,14 @@ app.post("/urls/:id/edit", (req, res) => {
   }
 });
 
+app.post("/login", (req, res) => {
+  const login = req.body.username;
+    res.cookie('login', login, {
+      expires: new Date(Date.now() + 8 * 3600000)
+    });
+    res.redirect("/urls")
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

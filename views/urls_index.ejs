@@ -19,7 +19,7 @@
   </head>
   <body>
     <main style="margin: 1em;">
-      <h3>My URLs</h3>
+      <h3 style="color: purple;">My URLs</h3>
       <table class="table">
         
           <thead>
@@ -36,7 +36,7 @@
                 <td><%= urls[id] %></td>
                 <td>
                   <form method="POST" action="/urls/<%=  id %>/delete">
-                    <button type="submit" class="btn btn-primary">Delete</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
                 </td>
                 <td>
