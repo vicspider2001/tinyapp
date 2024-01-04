@@ -20,7 +20,10 @@
       </div>
       <div style="margin-left: 760px;">
         <% if (username) { %>
-          <h5 style="color: white;">Welcome <%= username %>!</h5>
+          <h6 style="color: white;">Welcome <%= username %>!</h6>
+          <form class="form-inline" action="/logout" method="POST">
+            <button type="submit" class="btn btn-danger" style="position: absolute; right: 500px; top: 5px;">Logout</button>
+          </form>
         <% } else { %>
           <form class="form-inline" action="/login" method="POST">
             <div class="form-group mb-2">
