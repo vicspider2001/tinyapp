@@ -99,7 +99,7 @@ app.post("/urls/:id/edit", (req, res) => {
 
 app.post("/login", (req, res) => {
   const login = req.body.username;
-    res.cookie('login', login, {
+    res.cookie('username', login, {
       expires: new Date(Date.now() + 8 * 3600000)
     });
     res.redirect("/urls")
