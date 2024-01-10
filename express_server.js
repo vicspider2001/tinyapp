@@ -31,10 +31,6 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>Victors's World! Where are the people!</b></body></html>\n");
-});
-
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
