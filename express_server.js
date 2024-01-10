@@ -31,17 +31,13 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>Victors's World! Where are the people!</b></body></html>\n");
-});
-
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const templateVars = {id: req.params.id, longURL: urlDatabase[id]};
+  const templateVars = {id: req.params.id, longURL: urlDatabase[id], username: req.cookies["username"]};
   res.render("urls_show", templateVars);
 });
 
@@ -114,6 +110,12 @@ app.post("/logout", (req, res) => {
   res.clearCookie("username");
   res.redirect("/urls");
 });
+
+app.get("/register", (req, res) => {
+  const signup = req.params.register;
+  const templateVars = {signup: req.params.register, username: req.cookies["username"]};
+  res.render("register", templateVars);
+})
 
 
 app.listen(PORT, () => {
