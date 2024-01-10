@@ -85,11 +85,13 @@ app.post("/urls/:id/edit", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const login = req.body.username;
-    res.cookie('username', login, {
-      expires: new Date(Date.now() + 8 * 3600000)
-    });
-    res.redirect("/urls")
+ res.redirect("/login")
+});
+
+app.get("/login", (req, res) => {
+  const userDetails = users[req.cookies.user_id];
+  const templateVars = {userDetails: userDetails};
+  res.render("login", templateVars);
 });
 
 app.get("/urls", (req, res) => {
@@ -107,10 +109,11 @@ app.post("/logout", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const userDetails = users[req.cookies.user_id];
-  const templateVars = {userDetails: userDetails};
+  const reg = req.params.register;
+  const templateVars = {reg: reg}
   res.render("register", templateVars);
 });
+
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
