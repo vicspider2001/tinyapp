@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const cookieParser = require('cookie-parser')
-const PORT = 8080; // default port 8080
+const PORT = 8080; // default port 8080;
+const { generateRandomString, getUserByEmail } = require("./helper");
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -14,17 +15,6 @@ const urlDatabase = {
 };
 
 const users = {};
-
-const generateRandomString = (length) => {
-  const alphanumericChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let randomString = '';
-  for (let i = 0; i < length; i++) {
-    const index = Math.floor(Math.random() * alphanumericChars.length);
-    randomString += alphanumericChars.charAt(index);
-  }
-  return randomString;
-};
-
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -123,13 +113,27 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if(email === '' || password === '') {
+    res.status(400).send("Please provide an username and a password");
+    
+  }
+
+  let foundUser = getUserByEmail(email, users);
+  
+  if (foundUser) {
+    return res.status(400).send("A User with this email already exists.");
+  }
+
   const userRandomID = generateRandomString(4);
   const newUser = {
     id: userRandomID,
-    email: req.body.email,
-    password: req.body.password
+    email,
+    password
   };
-  
+
   // Add a new user to the 'users' database
   users[userRandomID] = newUser;
   res.cookie('user_id', userRandomID, {
