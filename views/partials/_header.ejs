@@ -19,8 +19,8 @@
         
       </div>
       <div style="margin-left: 760px;">
-        <% if (username) { %>
-          <h6 style="color: white;">Welcome <%= username %>!</h6>
+        <% if (userDetails) { %>
+          <h6 style="color: white;">Welcome <%= userDetails.email %>!</h6>
           <form class="form-inline" action="/logout" method="POST">
             <button type="submit" class="btn btn-danger" style="position: absolute; right: 500px; top: 5px;">Logout</button>
           </form>

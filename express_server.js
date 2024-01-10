@@ -13,6 +13,8 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {};
+
 const generateRandomString = (length) => {
   const alphanumericChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let randomString = '';
@@ -22,6 +24,7 @@ const generateRandomString = (length) => {
   }
   return randomString;
 };
+
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -37,7 +40,8 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const templateVars = {id: req.params.id, longURL: urlDatabase[id], username: req.cookies["username"]};
+  const userData = users[req.cookies.user_id];
+  const templateVars = {id: req.params.id, longURL: urlDatabase[id], userDetails: userData,};
   res.render("urls_show", templateVars);
 });
 
@@ -99,23 +103,42 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userDetails = users[req.cookies.user_id];
   const templateVars = { 
-    username: req.cookies["username"],
+    userDetails: userDetails,
     urls: urlDatabase
   };
   res.render("urls_index", templateVars);
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
-  res.redirect("/urls");
+  res.clearCookie("user_id");
+  res.redirect("/register");
 });
 
 app.get("/register", (req, res) => {
-  const signup = req.params.register;
-  const templateVars = {signup: req.params.register, username: req.cookies["username"]};
+  const userDetails = users[req.cookies.user_id];
+  const templateVars = {userDetails: userDetails};
   res.render("register", templateVars);
-})
+});
+
+app.post("/register", (req, res) => {
+  const userRandomID = generateRandomString(4);
+  const newUser = {
+    id: userRandomID,
+    email: req.body.email,
+    password: req.body.password
+  };
+  
+  // Add a new user to the 'users' database
+  users[userRandomID] = newUser;
+  res.cookie('user_id', userRandomID, {
+    expires: new Date(Date.now() + 8 * 3600000)
+  });
+  console.log(newUser);
+  console.log(users);
+  res.redirect("/urls");
+});
 
 
 app.listen(PORT, () => {
