@@ -18,28 +18,32 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         
       </div>
-      <div style="margin-left: 760px;">
-        <% if (username) { %>
-          <h6 style="color: white;">Welcome <%= username %>!</h6>
-          <form class="form-inline" action="/logout" method="POST">
-            <button type="submit" class="btn btn-danger" style="position: absolute; right: 500px; top: 5px;">Logout</button>
-          </form>
-        <% } else { %>
-          <form class="form-inline" action="/login" method="POST">
-            <div class="form-group mb-2">
-              <input
-                class="form-control"
-                type="text"
-                name="username"
-                placeholder="Enter Username"
-                style="width: 200px; height: 35px; margin: 1em"
-              />
-              <button type="submit" class="btn btn-warning">Login</button>
-            </div>
-          </form>
-        <% } %>
-      </div>
-      
     </div>
+    <div>
+      <% if (userDetails) { %>
+        <div>
+          <h6 style="color: white; position: absolute; left: 700px; top: 12px;">Welcome <%= userDetails.email %>!</h6>
+          <form class="form-inline" action="/logout" method="POST">
+            <button type="submit" class="btn btn-danger" style="position: absolute; left: 1000px; top: 5px;">Logout</button>
+          </form>
+        </div>
+        
+      <% } else { %> 
+        <div style="margin-left: 580px;">
+          <form class="form-inline" action="/login" method="GET">
+            <button type="submit" class="btn btn-primary"  style="position: absolute; left: 920px; top: 5px;">Login</button>
+            
+          </form>
+        </div>
+  
+        <div style="margin-left: 580px;">
+            <form class="form-inline" action="/register" method="GET">
+              <button type="submit" class="btn btn-warning" style="position: absolute; left: 1000px; top: 5px;">Register</button>
+            </form>
+        </div>
+      <% } %>
+    </div>
+      
+    
   </nav>
 </header>
