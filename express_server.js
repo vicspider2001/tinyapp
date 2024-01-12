@@ -44,6 +44,11 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+  const userDetails = users[req.cookies.user_id];
+  const userPages = urlsForUser(userDetails.id, urlDatabase);
+  if(!userDetails || !userPages) {
+    res.send(403).send("You must login to access your URLs!");
+  }
   const id = req.params.id;
   const userData = users[req.cookies.user_id];
   const templateVars = {id: req.params.id, longURL: urlDatabase[id].longURL, userDetails: userData,};
@@ -87,8 +92,9 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
   const userDetails = users[req.cookies.user_id];
-  if(!userDetails) {
-    res.status(403).send("Only registered users can delete URL");
+  const userPages = urlsForUser(userDetails.id, urlDatabase);
+  if(!userDetails || !userPages) {
+    res.status(403).send("Only registered users can delete URLs");
     res.redirect("/login")
   }else{
     const deletItem = req.params.id;
@@ -105,7 +111,8 @@ app.post("/urls/:id/delete", (req, res) => {
 
 app.post("/urls/:id/update", (req, res) => {
   const userDetails = users[req.cookies.user_id];
-  if(!userDetails) {
+  const userPages = urlsForUser(userDetails.id, urlDatabase);
+  if(!userDetails || !userPages) {
     res.status(403).send("Only registered users can update URL");
     res.redirect("/login")
   } else{
@@ -127,7 +134,8 @@ app.post("/urls/:id/update", (req, res) => {
 
 app.post("/urls/:id/edit", (req, res) => {
   const userDetails = users[req.cookies.user_id];
-  if(!userDetails) {
+  const userPages = urlsForUser(userDetails.id, urlDatabase);
+  if(!userDetails || !userPages) {
     res.status(403).send("Only registered users can edit URL");
     res.redirect("/login")
   } else{
