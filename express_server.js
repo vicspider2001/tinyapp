@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require('cookie-parser')
 const PORT = 8080; // default port 8080;
-const { generateRandomString, getUserByEmail } = require("./helper");
+const { generateRandomString, getUserByEmail, verifyPassword } = require("./helper");
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -25,7 +25,15 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const userDetails = users[req.cookies.user_id];
+  const templateVars = { 
+    userDetails: userDetails,
+  };
+  if(userDetails) {
+    res.render("urls_new", templateVars);
+  }
+  res.render("./login", templateVars);
+  
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -84,43 +92,38 @@ app.post("/urls/:id/edit", (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
- res.redirect("/login")
-});
-
-app.get("/login", (req, res) => {
-  const userDetails = users[req.cookies.user_id];
-  const templateVars = {userDetails: userDetails};
-  res.render("login", templateVars);
-});
-
 app.get("/urls", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   const templateVars = { 
     userDetails: userDetails,
     urls: urlDatabase
   };
-  res.render("urls_index", templateVars);
+  if(userDetails) {
+    res.render("urls_index", templateVars);
+  }
+  res.redirect("/login");
+  
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
-  res.redirect("/register");
+  res.redirect("/login");
 });
 
 app.get("/register", (req, res) => {
-  const reg = req.params.register;
-  const templateVars = {reg: reg}
+  const userDetails = users[req.cookies.user_id];
+  const templateVars = { 
+    userDetails: userDetails,
+  };
   res.render("register", templateVars);
 });
-
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  if(email === '' || password === '') {
-    res.status(400).send("Please provide an username and a password");
+  if(!email || !password) {
+    res.status(400).send("Please provide an email and a password");
     
   }
 
@@ -139,12 +142,41 @@ app.post("/register", (req, res) => {
 
   // Add a new user to the 'users' database
   users[userRandomID] = newUser;
-  res.cookie('user_id', userRandomID, {
-    expires: new Date(Date.now() + 8 * 3600000)
-  });
   console.log(newUser);
   console.log(users);
-  res.redirect("/urls");
+  res.redirect("/login");
+});
+
+app.get("/login", (req, res) => {
+  const userDetails = users[req.cookies.user_id];
+  const templateVars = { 
+    userDetails: userDetails,
+  };
+  res.render("login", templateVars );
+});
+
+app.post("/login", (req, res) => {
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
+  if(!userEmail || !userPassword) {
+    res.status(400).send("Provide login details")
+  }
+  let verifyEmail = getUserByEmail(userEmail, users);
+  
+  if(!verifyEmail) {
+    res.status(403).send("User not found");
+  }
+  
+  let verifyPword = verifyPassword(userPassword, users);
+  if(!verifyPword) {
+    res.status(403).send("Either email or password is invalid");
+  }
+
+  res.cookie('user_id', verifyEmail.id, {
+    expires: new Date(Date.now() + 8 * 3600000)
+  });
+  res.redirect("/urls")
+  
 });
 
 

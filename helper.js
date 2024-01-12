@@ -19,4 +19,14 @@ const getUserByEmail = (email, users) => {
   return null;
 }
 
-module.exports = {generateRandomString, getUserByEmail}
+const verifyPassword = (password, users) => {
+  for (const userPwd in users) {
+    const verified = users[userPwd];
+    if (verified.password === password) {
+      return verified;
+    }
+  }
+  return null;
+}
+
+module.exports = {generateRandomString, getUserByEmail, verifyPassword}

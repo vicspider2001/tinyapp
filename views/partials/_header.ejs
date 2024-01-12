@@ -18,19 +18,32 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         
       </div>
-      <div style="margin-left: 680px; margin-right: 15px;">
-        <form class="form-inline" action="/login" method="GET">
-          <button type="submit" class="btn btn-primary">Login</button>
-          
-        </form>
-      </div>
-
-      <div>
-          <form class="form-inline" action="/register" method="GET">
-            <button type="submit" class="btn btn-warning">Register</button>
-          </form>
-      </div>
-      
     </div>
+    <div>
+      <% if (userDetails) { %>
+        <div>
+          <h6 style="color: white; position: absolute; left: 700px; top: 12px;">Welcome <%= userDetails.email %>!</h6>
+          <form class="form-inline" action="/logout" method="POST">
+            <button type="submit" class="btn btn-danger" style="position: absolute; left: 1000px; top: 5px;">Logout</button>
+          </form>
+        </div>
+        
+      <% } else { %> 
+        <div style="margin-left: 580px;">
+          <form class="form-inline" action="/login" method="GET">
+            <button type="submit" class="btn btn-primary"  style="position: absolute; left: 920px; top: 5px;">Login</button>
+            
+          </form>
+        </div>
+  
+        <div style="margin-left: 580px;">
+            <form class="form-inline" action="/register" method="GET">
+              <button type="submit" class="btn btn-warning" style="position: absolute; left: 1000px; top: 5px;">Register</button>
+            </form>
+        </div>
+      <% } %>
+    </div>
+      
+    
   </nav>
 </header>
