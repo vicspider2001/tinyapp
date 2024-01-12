@@ -43,6 +43,15 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:id", (req, res) => {
+  const id = req.params.id;
+  const longURL = urlDatabase[id];
+  if(!longURL) {
+    return res.status(404).send("Short URL Cannot be found");
+  }
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
   let longURL = req.body.longURL;
   if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
