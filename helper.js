@@ -29,4 +29,8 @@ const verifyPassword = (password, users) => {
   return null;
 }
 
+<<<<<<< HEAD
 module.exports = {generateRandomString, getUserByEmail, verifyPassword}
+=======
+module.exports = {generateRandomString, getUserByEmail, verifyPassword}
+>>>>>>> 6a66520ded13f3e6f0615996044f1a9a1500f690
