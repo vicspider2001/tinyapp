@@ -16,6 +16,7 @@ const urlDatabase = {
 
 const users = {};
 
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -53,6 +54,11 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  const userDetails = users[req.cookies.user_id];
+  if(!userDetails) {
+    res.status(403).send("Only registered users can shorten URL");
+    res.redirect("/login")
+  }
   let longURL = req.body.longURL;
   if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
     longURL = `http://${longURL}`;
@@ -66,39 +72,60 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-  const deletItem = req.params.id;
-  if(urlDatabase[deletItem]) {
-    delete urlDatabase[deletItem];
-    res.redirect("/urls")
+  const userDetails = users[req.cookies.user_id];
+  if(!userDetails) {
+    res.status(403).send("Only registered users can delete URL");
+    res.redirect("/login")
+  }else{
+    const deletItem = req.params.id;
+    if(urlDatabase[deletItem]) {
+      delete urlDatabase[deletItem];
+      res.redirect("/urls")
+    }
+    else{
+      res.send("URL was not found")
+    }
   }
-  else{
-    res.send("URL was not found")
-  }
+  
 });
 
 app.post("/urls/:id/update", (req, res) => {
-  const updateItem = req.params.id;
-  let editURL = req.body.longURL;
-  if(!editURL.startsWith("http://") && !editURL.startsWith("https://")) {
-    editURL = `http://${editURL}`;
+  const userDetails = users[req.cookies.user_id];
+  if(!userDetails) {
+    res.status(403).send("Only registered users can update URL");
+    res.redirect("/login")
+  } else{
+    const updateItem = req.params.id;
+    let editURL = req.body.longURL;
+    if(!editURL.startsWith("http://") && !editURL.startsWith("https://")) {
+      editURL = `http://${editURL}`;
+    }
+    if(!editURL.endsWith(".com")) {
+      editURL = `${editURL}.com`;
+    }
+    if(urlDatabase[updateItem]) {
+      urlDatabase[updateItem] = editURL;
+      res.redirect(`/urls`);
+    }
   }
-  if(!editURL.endsWith(".com")) {
-    editURL = `${editURL}.com`;
-  }
-  if(urlDatabase[updateItem]) {
-    urlDatabase[updateItem] = editURL;
-    res.redirect(`/urls`);
-  }
+  
 });
 
 app.post("/urls/:id/edit", (req, res) => {
-  const editItem = req.params.id;
-  if(urlDatabase[editItem]) {
-    res.redirect(`/urls/${editItem}`)
+  const userDetails = users[req.cookies.user_id];
+  if(!userDetails) {
+    res.status(403).send("Only registered users can edit URL");
+    res.redirect("/login")
+  } else{
+    const editItem = req.params.id;
+    if(urlDatabase[editItem]) {
+      res.redirect(`/urls/${editItem}`)
+    }
+    else{
+      res.send("URL was not found")
+    }
   }
-  else{
-    res.send("URL was not found")
-  }
+  
 });
 
 app.get("/urls", (req, res) => {
