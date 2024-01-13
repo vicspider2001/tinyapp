@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const cookieParser = require('cookie-session')
+const cookieSession  = require('cookie-session')
 const PORT = 8080; // default port 8080;
 const bcrypt = require("bcryptjs");
 const { generateRandomString, getUserByEmail, urlsForUser } = require("./helper");
@@ -8,7 +8,7 @@ const { generateRandomString, getUserByEmail, urlsForUser } = require("./helper"
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser({
+app.use(cookieSession ({
   name: 'session',
   keys: ['key1', 'key2'],
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
