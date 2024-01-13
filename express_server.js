@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const cookieParser = require('cookie-parser')
 const PORT = 8080; // default port 8080;
+const bcrypt = require("bcryptjs");
 const { generateRandomString, getUserByEmail, verifyPassword, urlsForUser } = require("./helper");
+
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
@@ -177,11 +179,12 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
+  const pword = req.body.password;
+  const hashedPassword = bcrypt.hashSync(pword, 10);
+  const password = hashedPassword;
 
   if(!email || !password) {
     return res.status(400).send("Please provide an email and a password");
-    
   }
 
   let foundUser = getUserByEmail(email, users);
@@ -214,17 +217,20 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const userEmail = req.body.email;
-  const userPassword = req.body.password;
-  if(!userEmail || !userPassword) {
+  const userPword = req.body.password;
+  
+  if(!userEmail || !userPword) {
     return res.status(400).send("Provide login details")
   }
-  let verifyEmail = getUserByEmail(userEmail, users);
   
+  let verifyEmail = getUserByEmail(userEmail, users);
+    
   if(!verifyEmail) {
     res.status(403).send("User not found");
   }
+
+  let verifyPword = bcrypt.compareSync(userPword, verifyEmail.password);
   
-  let verifyPword = verifyPassword(userPassword, users);
   if(!verifyPword) {
     return res.status(403).send("Either email or password is invalid");
   }
