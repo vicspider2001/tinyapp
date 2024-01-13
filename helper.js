@@ -19,16 +19,6 @@ const getUserByEmail = (email, users) => {
   return null;
 }
 
-const verifyPassword = (password, users) => {
-  for (const userPwd in users) {
-    const verified = users[userPwd];
-    if (verified.password === password) {
-      return verified;
-    }
-  }
-  return null;
-}
-
 const urlsForUser = (id, urlDatabase) => {
   const userUrls = {};
   for (const shortURL in urlDatabase) {
@@ -40,5 +30,5 @@ const urlsForUser = (id, urlDatabase) => {
   return userUrls;
 };
 
-module.exports = {generateRandomString, getUserByEmail, verifyPassword, urlsForUser}
+module.exports = {generateRandomString, getUserByEmail, urlsForUser}
 
