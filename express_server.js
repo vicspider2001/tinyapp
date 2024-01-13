@@ -37,9 +37,9 @@ app.get("/urls/new", (req, res) => {
     userDetails: userDetails,
   };
   if(userDetails) {
-    res.render("urls_new", templateVars);
+    return res.render("urls_new", templateVars);
   }
-  res.render("./login", templateVars);
+  return res.render("./login", templateVars);
   
 });
 
@@ -47,12 +47,12 @@ app.get("/urls/:id", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   const userPages = urlsForUser(userDetails.id, urlDatabase);
   if(!userDetails || !userPages) {
-    res.send(403).send("You must login to access your URLs!");
+    return res.send(403).send("You must login to access your URLs!");
   }
   const id = req.params.id;
   const userData = users[req.cookies.user_id];
   const templateVars = {id: req.params.id, longURL: urlDatabase[id].longURL, userDetails: userData,};
-  res.render("urls_show", templateVars);
+  return res.render("urls_show", templateVars);
 });
 
 app.get("/u/:id", (req, res) => {
@@ -61,14 +61,14 @@ app.get("/u/:id", (req, res) => {
   if(!longURL) {
     return res.status(404).send("Short URL Cannot be found");
   }
-  res.redirect(longURL);
+  return res.redirect(longURL);
 });
 
 app.post("/urls", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   if(!userDetails) {
-    res.status(403).send("Only registered users can shorten URL");
-    res.redirect("/login")
+    return res.status(403).send("Only registered users can shorten URL");
+    return res.redirect("/login")
   }
   let longURL = req.body.longURL;
   if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
@@ -84,9 +84,6 @@ app.post("/urls", (req, res) => {
     userID: userID
   }
   urlDatabase[shortURLID] = newdatabase;
-  console.log(newdatabase);
-  console.log(urlDatabase);
-  // res.redirect(`/urls/${shortURLID}`);
   res.redirect("/urls");
 });
 
@@ -94,16 +91,16 @@ app.post("/urls/:id/delete", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   const userPages = urlsForUser(userDetails.id, urlDatabase);
   if(!userDetails || !userPages) {
-    res.status(403).send("Only registered users can delete URLs");
-    res.redirect("/login")
+    return res.status(403).send("Only registered users can delete URLs");
+    return res.redirect("/login")
   }else{
     const deletItem = req.params.id;
     if(urlDatabase[deletItem]) {
       delete urlDatabase[deletItem];
-      res.redirect("/urls")
+      return res.redirect("/urls")
     }
     else{
-      res.send("URL was not found")
+      return res.send("URL was not found")
     }
   }
   
@@ -113,8 +110,8 @@ app.post("/urls/:id/update", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   const userPages = urlsForUser(userDetails.id, urlDatabase);
   if(!userDetails || !userPages) {
-    res.status(403).send("Only registered users can update URL");
-    res.redirect("/login")
+    return res.status(403).send("Only registered users can update URL");
+    return res.redirect("/login")
   } else{
     const updateItem = req.params.id;
     let editURL = req.body.longURL;
@@ -126,7 +123,7 @@ app.post("/urls/:id/update", (req, res) => {
     }
     if(urlDatabase[updateItem]) {
       urlDatabase[updateItem] = editURL;
-      res.redirect(`/urls`);
+      return res.redirect(`/urls`);
     }
   }
   
@@ -136,15 +133,15 @@ app.post("/urls/:id/edit", (req, res) => {
   const userDetails = users[req.cookies.user_id];
   const userPages = urlsForUser(userDetails.id, urlDatabase);
   if(!userDetails || !userPages) {
-    res.status(403).send("Only registered users can edit URL");
-    res.redirect("/login")
+    return res.status(403).send("Only registered users can edit URL");
+    return res.redirect("/login")
   } else{
     const editItem = req.params.id;
     if(urlDatabase[editItem]) {
-      res.redirect(`/urls/${editItem}`)
+      return res.redirect(`/urls/${editItem}`)
     }
     else{
-      res.send("URL was not found")
+      return res.send("URL was not found")
     }
   }
   
@@ -158,9 +155,9 @@ app.get("/urls", (req, res) => {
       userDetails: userDetails,
       urls: userUrls
     };
-    res.render("urls_index", templateVars);
+    return res.render("urls_index", templateVars);
   } else {
-    res.redirect("/login");
+    return res.redirect("/login");
   }
 });
 
@@ -183,7 +180,7 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
 
   if(!email || !password) {
-    res.status(400).send("Please provide an email and a password");
+    return res.status(400).send("Please provide an email and a password");
     
   }
 
@@ -219,7 +216,7 @@ app.post("/login", (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   if(!userEmail || !userPassword) {
-    res.status(400).send("Provide login details")
+    return res.status(400).send("Provide login details")
   }
   let verifyEmail = getUserByEmail(userEmail, users);
   
@@ -229,7 +226,7 @@ app.post("/login", (req, res) => {
   
   let verifyPword = verifyPassword(userPassword, users);
   if(!verifyPword) {
-    res.status(403).send("Either email or password is invalid");
+    return res.status(403).send("Either email or password is invalid");
   }
 
   res.cookie('user_id', verifyEmail.id, {
