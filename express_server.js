@@ -179,8 +179,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
-  const pword = req.body.password;
-  const hashedPassword = bcrypt.hashSync(pword, 10);
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   const password = hashedPassword;
 
   if(!email || !password) {
@@ -235,9 +234,7 @@ app.post("/login", (req, res) => {
     return res.status(403).send("Either email or password is invalid");
   }
 
-  res.cookie('user_id', verifyEmail.id, {
-    expires: new Date(Date.now() + 8 * 3600000)
-  });
+  res.cookie('user_id', verifyEmail.id);
   res.redirect("/urls")
   
 });
