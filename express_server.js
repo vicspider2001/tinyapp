@@ -26,7 +26,18 @@ const urlDatabase = {
   },
 };
 
-const users = {};
+const users = {
+  OI9M: {
+    id: 'OI9M',
+    email: 'anogwihvictor@gmail.com',
+    password: '$2a$10$Oa5evBTgDYqRcoJ2roKRiOKTUHcRSXBSBd55XBUY2AUexF0/e6Uca'
+  },
+  '2Wik': {
+    id: '2Wik',
+    email: 'zarvichosh@gmail.com',
+    password: '$2a$10$lt0hPNObPA3u1plB5zRbpeRuKpJP.s5lj72tZzMTHDRzCWsxRsBTe'
+  }
+};
 
 
 app.get("/", (req, res) => {
