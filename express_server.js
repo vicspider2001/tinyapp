@@ -139,7 +139,7 @@ app.post("/urls/:id/update", (req, res) => {
       editURL = `${editURL}.com`;
     }
     if(urlDatabase[updateItem]) {
-      urlDatabase[updateItem] = editURL;
+      urlDatabase[updateItem].longURL = editURL;
       return res.redirect(`/urls`);
     }
   }
