@@ -3,7 +3,7 @@ const app = express();
 const cookieSession  = require('cookie-session')
 const PORT = 8080; // default port 8080;
 const bcrypt = require("bcryptjs");
-const { generateRandomString, getUserByEmail, urlsForUser } = require("./helper");
+const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
 
 
 app.set("view engine", "ejs");
