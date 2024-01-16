@@ -1,3 +1,4 @@
+//Generates a random string of alphanumeric characters of a specified length.
 const generateRandomString = (length) => {
   const alphanumericChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let randomString = '';
@@ -8,6 +9,7 @@ const generateRandomString = (length) => {
   return randomString;
 };
 
+//Finds a user in the given users database by their email.
 const getUserByEmail = (email, users) => {
   for (const userId in users) {
     const user = users[userId];
@@ -19,6 +21,7 @@ const getUserByEmail = (email, users) => {
   return null;
 }
 
+//Retrieves all URLs associated with a specific user from the URL database.
 const urlsForUser = (id, urlDatabase) => {
   const userUrls = {};
   for (const shortURL in urlDatabase) {
@@ -30,5 +33,6 @@ const urlsForUser = (id, urlDatabase) => {
   return userUrls;
 };
 
+// Exporting the functions for external use
 module.exports = {generateRandomString, getUserByEmail, urlsForUser}
 
