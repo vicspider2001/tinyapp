@@ -71,9 +71,13 @@ app.get("/urls/new", (req, res) => {
 // Individual URL details route
 app.get("/urls/:id", (req, res) => {
   const userDetails = users[req.session.user_id];
-  const userPages = urlsForUser(userDetails.id, urlDatabase); //helper function used to get specific user URLs
-  if(!userDetails || !userPages) {
+  if(!userDetails) { // checks for if a user is logged in or not and if a user has URLs
     return res.status(403).render("error", { error: "You must log in to access your URLs!" });
+  }
+
+  const userPages = urlsForUser(userDetails.id, urlDatabase); //helper function used to get specific user URLs
+  if(!userPages) { // checks if a user has URLs
+    return res.status(403).render("error", { error: "You do not have any short URL!" });
   }
 
   const id = req.params.id;
@@ -83,7 +87,7 @@ app.get("/urls/:id", (req, res) => {
     return res.status(404).render("error", { error: "Short URL not found" });
   }
 
-  if(urlData.userID !== userDetails.id) {
+  if(urlData.userID !== userDetails.id) { // Ensures that a user does not access other Users URL
     return res.status(403).render("error", { error: "You do not have permission to access this URL!" });
   }
 
@@ -112,9 +116,7 @@ app.post("/urls", (req, res) => {
   if(!longURL.startsWith("http://") && !longURL.startsWith("https://")) {
     longURL = `http://${longURL}`;
   }
-  if(!longURL.endsWith(".com")) {
-    longURL = `${longURL}.com`;
-  }
+  
   let shortURLID = generateRandomString(6); // generates random strings as short URLs
   const userID = userDetails.id;
   let newdatabase = {
@@ -157,9 +159,7 @@ app.post("/urls/:id/update", (req, res) => {
     if(!editURL.startsWith("http://") && !editURL.startsWith("https://")) {
       editURL = `http://${editURL}`;
     }
-    if(!editURL.endsWith(".com")) {
-      editURL = `${editURL}.com`;
-    }
+    
     if(urlDatabase[updateItem]) {
       urlDatabase[updateItem].longURL = editURL;
       return res.redirect(`/urls`);
